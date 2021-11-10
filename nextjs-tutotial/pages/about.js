@@ -11,7 +11,7 @@ export default function About() {
   return (
     <div>
       <Header as="h3" style={{ paddingTop: 40 }} color="teal">
-        {/*회사 소개*/}
+        회사 소개
       </Header>
       <Divider />
       <List>
