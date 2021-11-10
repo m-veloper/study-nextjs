@@ -1,6 +1,9 @@
 import Head from "next/head";
 import Axios from "axios";
 import Item from "../../src/component/Item/Item";
+import {useRouter} from "next/router";
+import { Dimmer, Loader } from "semantic-ui-react";
+
 
 /**
  * 정적페이지
@@ -10,6 +13,17 @@ import Item from "../../src/component/Item/Item";
  * @constructor
  */
 const Post = ({ item, name }) => {
+  const router = useRouter();
+
+  if (router.isFallback) {
+    return (
+      <div style={{ padding: "100px 0" }}>
+        <Loader active inline="centered">
+          Loading
+        </Loader>
+      </div>
+    );
+  }
   return (
     <>
       {item && (
@@ -29,14 +43,29 @@ const Post = ({ item, name }) => {
 export default Post;
 
 export async function getStaticPaths() {
+  const apiUrl = process.env.apiUrl;
+  const res = await Axios.get(apiUrl);
+  const data = res.data;
+
   return {
-    paths: [
-      { params: { id: "740" } },
-      { params: { id: "730" } },
-      { params: { id: "729" } },
-    ],
+    // data 전체를 빌드하면 많은 정적 페이지가 만들어짐. 빌드시간도 오래걸림.
+    // slice 함수를 사용하여 특정 범위의 페이지들만 만들어지게함.
+    paths: data.slice(0, 9).map((item) => ({
+      params: {
+        id: item.id.toString(),
+      },
+    })),
     fallback: true,
   };
+
+  // return {
+  //   paths: [
+  //     { params: { id: "740" } },
+  //     { params: { id: "730" } },
+  //     { params: { id: "729" } },
+  //   ],
+  //   fallback: true,
+  // };
 }
 
 export async function getStaticProps(context) {

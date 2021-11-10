@@ -35,7 +35,7 @@ export default function Home({ list }) {
 }
 
 export async function getStaticProps() {
-  const apiUrl = process.env.apiUrl;
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const res = await Axios.get(apiUrl);
   const data = res.data;
 
